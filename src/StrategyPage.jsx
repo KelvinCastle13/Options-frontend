@@ -1,14 +1,15 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { StrategyIndex } from "./StrategyIndex"
+import OptionLegShow from "./OptionLegShow";
 import { StrategyShow } from "./StrategyShow";
 import { Modal } from "./Modal";
 
-
 export function StrategyPage() {
   const [strategies, setStrategies] = useState([]);
-  const [isStrategiesShowVisible, setIsStrategiesShowVisible] = useState(false);
+  const [modalContent, setModalContent] = useState(null);
   const [currentStrategy, setCurrentStrategy] = useState({});
+  const [isModalVisible, setIsModalVisible] = useState(false);
   
   const handleIndex = () => {
     console.log("handleIndex");
@@ -17,24 +18,53 @@ export function StrategyPage() {
       setStrategies(response.data);
     });
   };
+  
+  useEffect(handleIndex, []);
 
-  const handleShow = (strategy) => {
-    console.log("handleShow", strategy);
-    setIsStrategiesShowVisible(true);
+  const handleShowInfo = (strategy) => {
     setCurrentStrategy(strategy);
+    setModalContent("info");
+    setIsModalVisible(true);
   };
 
-  useEffect(handleIndex, []);
- 
-  
+  const handleAddLegs = (strategy) => {
+    console.log("Add Legs clicked for strategy:", strategy);
+    setCurrentStrategy(strategy);
+    setModalContent("legs");
+    setIsModalVisible(true);
+  };
+
+  const handleLegsSubmit = (legsData) => {
+    axios.post("/option_legs", {
+      strategy_id: currentStrategy.id,
+      legs: legsData,
+    }).then(() => {
+      setIsModalVisible(false);
+    });
+  };
+
   return (
     <main>
-      <StrategyIndex strategies={strategies} onShow={handleShow}/>
+      <StrategyIndex 
+      strategies={strategies} 
+      onShow={handleShowInfo}
+      onAddLegs={handleAddLegs}
+      />
       <Modal 
-      show={isStrategiesShowVisible}
-      onClose={() => setIsStrategiesShowVisible(false)}>
-        <StrategyShow strategy={currentStrategy} />
+      show={isModalVisible} 
+      onClose={() => setIsModalVisible(false)}
+      >
+        {modalContent === "info" && 
+        <StrategyShow strategy={currentStrategy} />}
+        {modalContent === "legs" && (
+          <OptionLegShow
+            strategy={currentStrategy}
+            onClose={() => setIsModalVisible(false)}
+            onSubmit={handleLegsSubmit}
+          />
+        )}
       </Modal>
+
     </main>
   )
 }

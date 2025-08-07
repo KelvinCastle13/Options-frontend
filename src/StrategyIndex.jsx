@@ -1,4 +1,4 @@
-export function StrategyIndex({ strategies, onShow }) {
+export function StrategyIndex({ strategies, onShow, onAddLegs }) {
   return (
     <div>
         <h1 style={{
@@ -26,7 +26,13 @@ export function StrategyIndex({ strategies, onShow }) {
           backgroundColor: "#fff"
           }}>
             <h2>{strategy.name}</h2>
+            <img
+              src={strategy.image_url}
+              alt={strategy.name}
+              style={{ maxWidth: '100%', height: 'auto' }}
+            />
             <button onClick={() => onShow(strategy)}>More Info</button>
+            <button onClick={() => onAddLegs(strategy)}>Select</button>
           </div>
         ))}
       </div>
