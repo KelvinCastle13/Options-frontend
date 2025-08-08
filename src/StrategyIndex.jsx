@@ -32,6 +32,7 @@ export function StrategyIndex({ strategies, onShow, onAddLegs }) {
               style={{ maxWidth: '100%', height: 'auto' }}
             />
             <button onClick={() => onShow(strategy)}>More Info</button>
+            <br/>
             <button onClick={() => onAddLegs(strategy)}>Select</button>
           </div>
         ))}

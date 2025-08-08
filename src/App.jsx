@@ -2,6 +2,7 @@ import axios from "axios";
 import { Header } from "./Header";
 import { Footer } from "./Footer";
 import { StrategyPage } from "./StrategyPage";
+import LogPage from "./LogPage";
 
 
 axios.defaults.baseURL = "http://localhost:3000";
@@ -12,6 +13,7 @@ function App() {
     <div>
       <Header />
       <StrategyPage />
+      <LogPage />
       <Footer />
     </div>
   )

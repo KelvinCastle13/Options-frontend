@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react"
-import { Modal } from "./Modal"
+import { LEG_TYPES, LEG_ACTIONS, EXPIRATIONS, STRIKE_TYPES } from "./constants.jsx";
 
-const LEG_TYPES = ["Call", "Put"];
-const LEG_ACTIONS = ["Buy", "Sell"];
-const EXPIRATIONS = ["0D", "1W", "2W", "3W", "1M", "40D", "90D", "6M"];
-const STRIKE_TYPES = ["IDM", "ATM", "OTM", "DELTA", ]
+//  const LEG_TYPES = ["Call", "Put"];
+//  const LEG_ACTIONS = ["Buy", "Sell"];
+//  const EXPIRATIONS = ["0D", "1W", "2W", "3W", "1M", "40D", "90D", "6M"];
+//  const STRIKE_TYPES = ["IDM", "ATM", "OTM", "DELTA"]
 
 const blankLeg = {
 leg_type: "",
@@ -13,6 +13,7 @@ expiration: "",
 strike_type: "",
 strike_value: "",
 };
+
 
 export default function OptionLegShow({ strategy, onClose, onSubmit }) {
   const [legs, setLegs] = useState([]);
