@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { StrategyIndex } from "./StrategyIndex"
-import OptionLegShow from "./OptionLegShow";
+import { LegsShow } from "./LegsShow";
 import { StrategyShow } from "./StrategyShow";
 import { Modal } from "./Modal";
 
@@ -35,7 +35,7 @@ export function StrategyPage() {
   };
 
   const handleLegsSubmit = (legsData) => {
-    axios.post("/option_legs", {
+    axios.post("/legs", {
       strategy_id: currentStrategy.id,
       legs: legsData,
     }).then(() => {
@@ -57,7 +57,7 @@ export function StrategyPage() {
         {modalContent === "info" && 
         <StrategyShow strategy={currentStrategy} />}
         {modalContent === "legs" && (
-          <OptionLegShow
+          <LegsShow
             strategy={currentStrategy}
             onClose={() => setIsModalVisible(false)}
             onSubmit={handleLegsSubmit}

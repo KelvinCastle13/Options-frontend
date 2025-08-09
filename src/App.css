@@ -64,6 +64,12 @@ th {
 td select,
 td input {
   width: 100%;
-  /* fill the cell evenly */
   box-sizing: border-box;
+}
+
+body {
+  background-image: url("https://wallpapers.com/images/high/hd-abstract-phone-blg4njx912f7o5tt.webp");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
