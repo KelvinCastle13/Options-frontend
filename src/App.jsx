@@ -15,7 +15,6 @@ function App() {
       <Header />
       <StrategyPage />
       <StockModal />
-      <LegsShow />
       <Footer />
     </div>
   )
