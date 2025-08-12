@@ -1,4 +1,4 @@
-#root {
+/* #root {
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
@@ -53,8 +53,8 @@ th,
 td {
   border: 1px solid #ccc;
   /* brackets around each cell */
-  padding: 8px;
-  text-align: center;
+/* padding: 8px;
+text-align: center;
 }
 
 th {
@@ -65,11 +65,20 @@ td select,
 td input {
   width: 100%;
   box-sizing: border-box;
-}
+} */
 
-body {
-  background-image: url("https://wallpapers.com/images/high/hd-abstract-phone-blg4njx912f7o5tt.webp");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+body,
+html,
+#root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background-color: #0d1117;
+  /* dark background */
+  color: #39ff14;
+  /* neon green text */
+  font-family: 'Courier New', Courier, monospace;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }

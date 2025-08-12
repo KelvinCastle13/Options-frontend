@@ -1,12 +1,12 @@
 import { useState } from "react";
 import axios from "axios";
 
-export function LegsShow ({ stock, strategy, onClose }) {
+export function LegsShow ({ stock, strategy, onClose, onSave }) {
   const legCount = strategy?.leg_count || 1;
   
   const [formData, setFormData] = useState(
     Array(legCount).fill(null).map(() => ({
-    type: "",
+    leg_type: "",
     side: "",
     expiration: "",
     strike: "",
@@ -25,53 +25,26 @@ export function LegsShow ({ stock, strategy, onClose }) {
     event.preventDefault();
 
     axios
-      .post("/legs.json", {
-        strategy_id: strategy.id,
+      .post("/trades.json", {
+        stock_name: stock.name,
+        strategy_name: strategy.name,
+        profit_loss: 0,
         legs: formData,
       })
-      .then(() => {
+      .then((response) => {
+        onSave(response.data);
         onClose();
       })
   };
 
-  const legsGridStyle = {
-    display: "flex",
-    flexWrap: "wrap",
-    gap: "12px",
-    justifyContent: "center",
-  };
-
-  const legBoxStyle = {
-    flex: "1 1 45%",
-    minWidth: "300px",
-    border: "1px solid #ddd",
-    borderRadius: "8px",
-    padding: "10px",
-    background: "#f9f9f9",
-  };
-
-  const legRowStyle = {
-  display: "flex",
-  alignItems: "center",
-  gap: "6px",
-  marginBottom: "8px",
-  flexWrap: "wrap",
-};
-
-const smallInputStyle = {
-  padding: "4px 6px",
-  borderRadius: "4px",
-  border: "1px solid #ccc",
-  fontSize: "0.8rem",
-  width: "70px",
-};
-
 return (
   <div>
-    <h3 
-      style={{ 
-        textAlign: "center", 
-        marginBottom: "12px",  
+    <h3
+      style={{
+        textAlign: "center",
+        marginBottom: "16px",
+        fontFamily: "'Courier New', monospace",
+        color: "#39ff14",
       }}
     >
       Legs for {stock?.name} {strategy ? `-${strategy.name}` : ""}
@@ -85,20 +58,15 @@ return (
         padding: "8px",
       }}
     >
-      <div style={legsGridStyle}></div>
-        {formData.map((leg, index) => (
-          <div key={index} style={legBoxStyle}>
-            <h4 style={{ 
-              marginBottom: "8px", 
-              }}
-            >
-              Leg {index + 1}
-            </h4>
+    <div style={legsGridStyle}>
+      {formData.map((leg, index) => (
+        <div key={index} style={legBoxStyle}>
+          <h4 style={{ marginBottom: "12px" }}>Leg {index + 1}</h4>
 
           <div style={legRowStyle}>
             <select 
-              name="type" 
-              value={leg.type} 
+              name="leg_type" 
+              value={leg.leg_type} 
               onChange={(event) => handleChange(index, event)} 
               required
               style={{ ...smallInputStyle, width: "65px" }}
@@ -113,7 +81,7 @@ return (
               value={leg.side} 
               onChange={(event) => handleChange(index, event)}
               required
-              style={{ ...smallInputStyle, width: "65px" }} 
+              style={{ ...smallInputStyle, width: "75px" }} 
             >
               <option value="">Side</option>
               <option value="Buy">Buy</option>
@@ -126,7 +94,7 @@ return (
               value={leg.expiration}
               onChange={(event) => handleChange(index, event)}
               required
-              style={{ ...smallInputStyle, width: "65px" }}
+              style={{ ...smallInputStyle, width: "110px" }}
             />
 
             <input
@@ -135,8 +103,10 @@ return (
               placeholder="Strike"
               value={leg.strike}
               onChange={(event) => handleChange(index, event)}
-              style={{ ...smallInputStyle, width: "70px" }}
+              style={{ ...smallInputStyle, width: "80px" }}
               required
+              min="0"
+              step="0.01"
             />
 
           <input
@@ -145,54 +115,115 @@ return (
             placeholder="Contracts"
             value={leg.contracts}
             onChange={(event) => handleChange(index, event)}
-            style={{ ...smallInputStyle, width: "70px" }}
+            style={{ ...smallInputStyle, width: "80px" }}
             required
+            min="1"
           />
         </div>
       </div>
     ))}  
-
+      </div>
     <div 
       style={{ 
         display: "flex", 
         justifyContent: "space-between", 
-        marginTop: "12px",
-        gap: "8px", 
+        marginTop: "20px",
+        gap: "12px", 
       }}
     >
-      <button 
-        type="submit" 
-        style={{ 
-          backgroundColor: "#4CAF50",
-          color: "white",
-          padding: "6px 12px",
-          borderRadius: "6px",
-          border: "none",
-          cursor: "pointer",
-          fontWeight: "600",
-          flex: 1, 
-        }}
+      <button
+        type="submit"
+        style={saveButtonStyle}
+        onMouseEnter={(e) =>
+          (e.currentTarget.style.backgroundColor = "#2ee52e")
+        }
+        onMouseLeave={(e) =>
+          (e.currentTarget.style.backgroundColor = "#39ff14")
+        }
       >
         Save
       </button>
 
-      <button 
-        type="button" 
-        onClick={onClose} 
-        style={{ 
-          backgroundColor: "#ccc",
-          padding: "6px 12px",
-          borderRadius: "6px",
-          border: "none",
-          cursor: "pointer",
-          fontWeight: "600",
-          flex: 1,
-        }}
+      <button
+        type="button"
+        onClick={onClose}
+        style={cancelButtonStyle}
+        onMouseEnter={(e) =>
+          (e.currentTarget.style.backgroundColor = "#666")
+        }
+        onMouseLeave={(e) =>
+          (e.currentTarget.style.backgroundColor = "#444")
+        }
       >
         Cancel
-        </button>
+      </button>
       </div>
     </form>
   </div>
   );
 }
+
+const legsGridStyle = {
+    display: "flex",
+    flexWrap: "wrap",
+    gap: "12px",
+    justifyContent: "center",
+  };
+
+  const legBoxStyle = {
+    flex: "1 1 45%",
+    minWidth: "300px",
+    border: "1px solid #39ff14",
+    borderRadius: "8px",
+    padding: "16px",
+    backgroundColor: "#0d1117",
+    boxShadow: "0 0 8px #39ff14aa",
+    color: "#39ff14",
+    fontFamily: "'Courier New', monospace",
+  };
+
+  const legRowStyle = {
+    display: "flex",
+    alignItems: "center",
+    gap: "8px",
+    marginBottom: "12px",
+    flexWrap: "wrap",
+  };
+
+  const smallInputStyle = {
+    padding: "6px 8px",
+    borderRadius: "4px",
+    border: "1px solid #39ff14",
+    backgroundColor: "#161b22",
+    color: "#39ff14",
+    fontSize: "0.9rem",
+    fontFamily: "'Courier New', monospace",
+    outline: "none",
+    width: "70px",
+    textAlign: "center",
+  };
+
+  const buttonStyle = {
+    padding: "8px 16px",
+    borderRadius: "6px",
+    border: "none",
+    fontWeight: "600",
+    cursor: "pointer",
+    fontFamily: "'Courier New', monospace",
+    flex: 1,
+  };
+
+  const saveButtonStyle = {
+    ...buttonStyle,
+    backgroundColor: "#39ff14",
+    color: "#0d1117",
+    marginRight: "8px",
+    transition: "background-color 0.3s ease",
+  };
+
+  const cancelButtonStyle = {
+    ...buttonStyle,
+    backgroundColor: "#444",
+    color: "#39ff14",
+    transition: "background-color 0.3s ease",
+  };

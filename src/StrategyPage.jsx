@@ -5,21 +5,15 @@ import { LegsShow } from "./LegsShow";
 import { StrategyShow } from "./StrategyShow";
 import { Modal } from "./Modal";
 
-export function StrategyPage() {
+export function StrategyPage({  addTrade }) {
   const [strategies, setStrategies] = useState([]);
   const [modalContent, setModalContent] = useState(null);
   const [currentStrategy, setCurrentStrategy] = useState({});
   const [isModalVisible, setIsModalVisible] = useState(false);
   
-  const handleIndex = () => {
-    console.log("handleIndex");
-    axios.get("/strategies.json").then((response) => {
-      console.log(response.data);
-      setStrategies(response.data);
-    });
-  };
-  
-  useEffect(handleIndex, []);
+  useEffect(() => {
+    axios.get("/strategies.json").then(response => setStrategies(response.data));
+  }, []);
 
   const handleShowInfo = (strategy) => {
     setCurrentStrategy(strategy);
@@ -34,25 +28,21 @@ export function StrategyPage() {
     setIsModalVisible(true);
   };
 
-  const handleLegsSubmit = (legsData) => {
-    axios.post("/legs", {
-      strategy_id: currentStrategy.id,
-      legs: legsData,
-    }).then(() => {
-      setIsModalVisible(false);
-    });
-  };
+  const handelSaveLegs = (newTrade) => {
+    addTrade(newTrade);
+    setIsModalVisible(false);
+  }
 
-  return (
+return (
     <main>
       <StrategyIndex 
-      strategies={strategies} 
-      onShow={handleShowInfo}
-      onAddLegs={handleAddLegs}
+        strategies={strategies} 
+        onShow={handleShowInfo}
+        onAddLegs={handleAddLegs}
       />
       <Modal 
-      show={isModalVisible} 
-      onClose={() => setIsModalVisible(false)}
+        show={isModalVisible} 
+        onClose={() => setIsModalVisible(false)}
       >
         {modalContent === "info" && 
         <StrategyShow strategy={currentStrategy} />}
@@ -60,11 +50,10 @@ export function StrategyPage() {
           <LegsShow
             strategy={currentStrategy}
             onClose={() => setIsModalVisible(false)}
-            onSubmit={handleLegsSubmit}
+            onSubmit={handelSaveLegs}
           />
         )}
       </Modal>
-
     </main>
   )
 }
